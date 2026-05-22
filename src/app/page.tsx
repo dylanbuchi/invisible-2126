@@ -46,6 +46,13 @@ const projects = [
     risk: "Low",
     utility: "High",
     signal: 91,
+    map: "ledger",
+    evidence: [
+      ["ROLE", "Builder"],
+      ["STACK", "Next.js / intake UX / file capture"],
+      ["OUTPUT", "Client context workflow"],
+      ["CONSTRAINT", "Low-friction non-technical use"],
+    ],
   },
   {
     name: "Reply Shield",
@@ -56,6 +63,13 @@ const projects = [
     risk: "Low",
     utility: "High",
     signal: 87,
+    map: "reply",
+    evidence: [
+      ["ROLE", "Builder"],
+      ["STACK", "React / guardrails / review states"],
+      ["OUTPUT", "Human-approved reply flow"],
+      ["CONSTRAINT", "Tone safety over speed"],
+    ],
   },
   {
     name: "Signal Funnel",
@@ -66,6 +80,13 @@ const projects = [
     risk: "Medium",
     utility: "High",
     signal: 84,
+    map: "signal",
+    evidence: [
+      ["ROLE", "Builder"],
+      ["STACK", "Next.js / forms / routing"],
+      ["OUTPUT", "Quote-request capture path"],
+      ["CONSTRAINT", "Fast mobile completion"],
+    ],
   },
   {
     name: "Ops Relay",
@@ -76,6 +97,13 @@ const projects = [
     risk: "Low",
     utility: "High",
     signal: 89,
+    map: "ops",
+    evidence: [
+      ["ROLE", "Builder"],
+      ["STACK", "Workflow logic / reminders / UI"],
+      ["OUTPUT", "Admin follow-up relay"],
+      ["CONSTRAINT", "Useful without bloat"],
+    ],
   },
 ];
 
@@ -200,8 +228,8 @@ export default function Home() {
         <div className="scan-field" />
       </div>
 
-      <section id="top" className="relative z-10 min-h-screen px-5 py-5 sm:px-7 lg:px-10">
-        <div className="mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm">
+      <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:min-h-screen lg:px-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm lg:min-h-[calc(100vh-2.5rem)]">
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[oklch(0.72_0.18_174_/_0.18)] px-4 py-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-[oklch(0.73_0.06_185)] sm:px-6">
             <a href="#top" className="text-[oklch(0.83_0.18_172)] transition hover:text-[oklch(0.92_0.18_162)]">
               {"INVISIBLE // 2126"}
@@ -223,7 +251,7 @@ export default function Home() {
           </header>
 
           <div className="grid flex-1 grid-cols-1 lg:grid-cols-[1.03fr_0.97fr]">
-            <div className="relative flex flex-col justify-between gap-12 border-b border-[oklch(0.72_0.18_174_/_0.16)] px-5 py-10 sm:px-8 sm:py-14 lg:border-b-0 lg:border-r lg:px-10 xl:px-12">
+            <div className="relative flex flex-col justify-center gap-8 border-b border-[oklch(0.72_0.18_174_/_0.16)] px-5 py-10 sm:px-8 sm:py-14 lg:border-b-0 lg:border-r lg:px-10 xl:px-12">
               <div className="absolute left-5 top-5 h-20 w-px bg-[oklch(0.77_0.18_174_/_0.45)]" />
               <div className="absolute right-7 top-16 hidden h-28 w-28 border-r border-t border-[oklch(0.77_0.18_174_/_0.28)] lg:block" />
 
@@ -303,7 +331,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="operator" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <section id="operator" className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="section-index">
             <span>01</span>
@@ -326,7 +354,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <section className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto max-w-7xl">
           <div className="mb-10 flex flex-col justify-between gap-5 border-y border-[oklch(0.72_0.18_174_/_0.18)] py-6 lg:flex-row lg:items-end">
             <div className="section-index">
@@ -352,25 +380,38 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="systems" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <section id="systems" className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto max-w-7xl">
           <div className="archive-heading">
             <div className="section-index">
               <span>03</span>
               <h2>Project Archive</h2>
             </div>
-            <p>The operator remains unknown. The systems remain useful.</p>
+            <p>The operator remains unknown. The systems show role, stack, output, and constraint without exposing identity.</p>
           </div>
 
           <div className="project-archive">
             {projects.map((project) => (
-              <article key={project.name} className="project-record">
+              <article key={project.name} className={`project-record project-record--${project.map}`}>
                 <div className="record-topline">
                   <span>ARCHIVED: 2126</span>
                   <span>RATING: {project.signal}</span>
                 </div>
                 <h3>{project.name}</h3>
                 <p className="record-category">{project.category}</p>
+                <div className="record-dossier">
+                  <div className="record-map" aria-hidden="true">
+                    <span />
+                  </div>
+                  <dl className="record-evidence">
+                    {project.evidence.map(([label, value]) => (
+                      <div key={`${project.name}-${label}`}>
+                        <dt>{label}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
                 <p className="record-problem">{project.problem}</p>
                 <div className="record-meta">
                   <span>SYSTEM TYPE: {project.type}</span>
@@ -387,7 +428,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="terminal" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <section id="terminal" className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.86fr_1.14fr]">
           <div className="section-index">
             <span>04</span>
@@ -437,7 +478,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <section className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto max-w-7xl">
           <div className="archive-heading">
             <div className="section-index">
@@ -457,7 +498,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <section id="contact" className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto max-w-7xl">
           <div className="final-transmission">
             <div>

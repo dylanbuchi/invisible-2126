@@ -452,20 +452,29 @@ button:hover .button-sweep {
 .project-archive {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
+  gap: clamp(0.7rem, 1.5vw, 1rem);
   margin-top: 2.5rem;
-  border: 1px solid oklch(0.72 0.18 174 / 0.18);
-  background: oklch(0.72 0.18 174 / 0.18);
 }
 
 .project-record {
   position: relative;
   overflow: hidden;
-  min-height: 26rem;
+  min-height: 30rem;
+  border: 1px solid oklch(0.72 0.18 174 / 0.22);
   background:
+    radial-gradient(circle at 75% 20%, oklch(0.82 0.2 164 / 0.1), transparent 16rem),
+    linear-gradient(90deg, oklch(0.82 0.2 164 / 0.08) 0 1px, transparent 1px 100%),
+    linear-gradient(0deg, oklch(0.82 0.2 164 / 0.055) 0 1px, transparent 1px 100%),
     linear-gradient(180deg, oklch(0.13 0.026 185 / 0.95), oklch(0.08 0.018 190 / 0.98)),
     var(--graphite);
+  background-size:
+    auto,
+    2.75rem 2.75rem,
+    2.75rem 2.75rem,
+    auto,
+    auto;
   padding: clamp(1.2rem, 3vw, 2rem);
+  box-shadow: inset 0 0 60px oklch(0.82 0.2 164 / 0.055);
 }
 
 .project-record::before {
@@ -504,9 +513,9 @@ button:hover .button-sweep {
 .project-record h3 {
   position: relative;
   z-index: 1;
-  margin-top: 3.6rem;
+  margin-top: 2.4rem;
   color: var(--foreground);
-  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  font-size: clamp(2.2rem, 4.6vw, 4rem);
   font-weight: 650;
   line-height: 0.95;
   letter-spacing: 0;
@@ -527,14 +536,117 @@ button:hover .button-sweep {
   position: relative;
   z-index: 1;
   max-width: 39rem;
-  margin-top: 1.4rem;
+  margin-top: 1.15rem;
   color: oklch(0.72 0.035 190);
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.65;
 }
 
 .record-meta {
-  margin-top: 2rem;
+  margin-top: 1.35rem;
+}
+
+.record-dossier {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
+  gap: 1px;
+  margin-top: 1.35rem;
+  border: 1px solid oklch(0.72 0.18 174 / 0.22);
+  background: oklch(0.72 0.18 174 / 0.16);
+}
+
+.record-map,
+.record-evidence {
+  background: oklch(0.065 0.016 190 / 0.86);
+}
+
+.record-map {
+  position: relative;
+  min-height: 10.5rem;
+  overflow: hidden;
+}
+
+.record-map::before,
+.record-map::after,
+.record-map span {
+  position: absolute;
+  content: "";
+}
+
+.record-map::before {
+  inset: 18%;
+  border: 1px solid oklch(0.82 0.2 164 / 0.5);
+  box-shadow: 0 0 32px oklch(0.82 0.2 164 / 0.16);
+}
+
+.record-map::after {
+  inset: 33%;
+  border: 1px solid oklch(0.72 0.16 195 / 0.44);
+  transform: rotate(45deg);
+}
+
+.record-map span {
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 49%, oklch(0.82 0.2 164 / 0.45) 49.5% 50.5%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, oklch(0.82 0.2 164 / 0.32) 49.5% 50.5%, transparent 51%),
+    radial-gradient(circle at 50% 50%, oklch(0.82 0.2 164 / 0.18), transparent 42%);
+}
+
+.project-record--reply .record-map::before {
+  border-radius: 999px 999px 42% 42%;
+}
+
+.project-record--reply .record-map::after {
+  border-radius: 999px;
+  transform: none;
+}
+
+.project-record--signal .record-map::before {
+  clip-path: polygon(50% 0, 96% 100%, 4% 100%);
+  border-radius: 0;
+}
+
+.project-record--signal .record-map::after {
+  inset: 24% 36% 20%;
+  transform: none;
+}
+
+.project-record--ops .record-map::before {
+  transform: rotate(45deg);
+}
+
+.project-record--ops .record-map::after {
+  inset: 25%;
+  transform: rotate(0deg);
+}
+
+.record-evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: oklch(0.72 0.18 174 / 0.12);
+}
+
+.record-evidence div {
+  background: oklch(0.075 0.018 190 / 0.9);
+  padding: 0.72rem;
+}
+
+.record-evidence dt {
+  color: oklch(0.55 0.045 190);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.61rem;
+  letter-spacing: 0.16em;
+}
+
+.record-evidence dd {
+  margin-top: 0.42rem;
+  color: oklch(0.84 0.09 168);
+  font-size: 0.83rem;
+  line-height: 1.3;
 }
 
 .signal-meter {
@@ -915,11 +1027,111 @@ button:hover .button-sweep {
   }
 
   .hero-visual {
-    min-height: 29rem;
+    min-height: 22rem;
+  }
+
+  .section-index {
+    gap: 0.7rem;
+  }
+
+  .section-index h2 {
+    max-width: none;
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  .operator-grid {
+    gap: 1px;
+  }
+
+  .operator-avatar {
+    min-height: 17rem;
+    padding: 1rem;
+  }
+
+  .operator-avatar__glyph {
+    width: min(11rem, 78%);
+  }
+
+  .operator-avatar p {
+    margin-top: 1.2rem;
+    font-size: 1.25rem;
+  }
+
+  .operator-fields div {
+    min-height: 5.4rem;
+    padding: 0.85rem;
+  }
+
+  .operator-fields dd {
+    margin-top: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .capability-module {
+    padding: 0.95rem;
+  }
+
+  .capability-module h3 {
+    margin-top: 1.35rem;
+  }
+
+  .project-archive {
+    margin-top: 1.5rem;
+    gap: 0.7rem;
+  }
+
+  .project-record {
+    padding: 1rem;
   }
 
   .project-record h3 {
-    margin-top: 2.4rem;
+    margin-top: 1.35rem;
+  }
+
+  .record-dossier {
+    grid-template-columns: 1fr;
+  }
+
+  .record-map {
+    min-height: 7.6rem;
+  }
+
+  .record-evidence div {
+    padding: 0.62rem;
+  }
+
+  .record-problem {
+    font-size: 0.93rem;
+    line-height: 1.55;
+  }
+
+  .record-meta {
+    margin-top: 1rem;
+  }
+
+  .terminal-output {
+    min-height: 12rem;
+    max-height: 18rem;
+  }
+
+  .timeline {
+    margin-top: 1.5rem;
+  }
+
+  .timeline li {
+    padding: 0.85rem;
+  }
+
+  .timeline p {
+    margin-top: 1.2rem;
+  }
+
+  .signal-card {
+    min-height: 18rem;
+  }
+
+  .signal-wave {
+    width: 8.5rem;
   }
 
   .terminal-topbar {
