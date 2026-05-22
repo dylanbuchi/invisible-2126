@@ -228,9 +228,7 @@ export default function Home() {
       <div className={`intro-lock ${gateResolved ? "intro-lock--done" : ""}`} aria-hidden="true">
         <div className="intro-lock__frame">
           <span>ACCESS REQUEST</span>
-          <strong className="micro-glitch" data-text="PUBLIC ARCHIVE NODE 7F-2126">
-            PUBLIC ARCHIVE NODE 7F-2126
-          </strong>
+          <strong className="micro-glitch">PUBLIC ARCHIVE NODE 7F-2126</strong>
           <i />
         </div>
       </div>
@@ -280,7 +278,6 @@ export default function Home() {
 
                 <h1
                   className="glitch-title max-w-5xl text-balance text-[clamp(3.2rem,10vw,9.4rem)] font-semibold leading-[0.82] tracking-normal text-[oklch(0.91_0.035_176)]"
-                  data-text="INVISIBLE // 2126"
                 >
                   INVISIBLE <span className="text-[oklch(0.78_0.19_166)]">{"//"}</span> 2126
                 </h1>
@@ -329,9 +326,7 @@ export default function Home() {
                   />
                   <div className="identity-frame__plate">
                     <span>IDENTITY HASH</span>
-                    <strong className="micro-glitch" data-text="██-██-██ // REDACTED">
-                      {"██-██-██ // REDACTED"}
-                    </strong>
+                    <strong className="micro-glitch">{"██-██-██ // REDACTED"}</strong>
                   </div>
                 </div>
               </div>

@@ -176,39 +176,7 @@ button:hover .button-sweep {
 .glitch-title,
 .micro-glitch {
   position: relative;
-}
-
-.glitch-title::before,
-.glitch-title::after,
-.micro-glitch::before,
-.micro-glitch::after {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  content: attr(data-text);
-}
-
-.glitch-title::before,
-.micro-glitch::before {
-  color: oklch(0.78 0.18 196);
-  transform: translateX(-0.025em);
-}
-
-.glitch-title::after,
-.micro-glitch::after {
-  color: var(--signal);
-  transform: translateX(0.025em);
-}
-
-.glitch-title::before,
-.glitch-title::after {
-  animation: glitch-flicker 7.2s steps(2, end) infinite;
-}
-
-.micro-glitch::before,
-.micro-glitch::after {
-  animation: glitch-flicker 5.8s steps(2, end) infinite;
+  animation: text-signal-shift 6.8s steps(2, end) infinite;
 }
 
 .hero-orbit {
@@ -1053,31 +1021,31 @@ button:hover .button-sweep {
   }
 }
 
-@keyframes glitch-flicker {
+@keyframes text-signal-shift {
   0%,
   92%,
   100% {
-    opacity: 0;
-    clip-path: inset(0 0 0 0);
+    text-shadow: none;
+    transform: translateX(0);
   }
 
   93% {
-    opacity: 0.34;
-    clip-path: inset(0 0 62% 0);
+    text-shadow:
+      -0.035em 0 oklch(0.78 0.18 196 / 0.5),
+      0.035em 0 var(--signal);
+    transform: translateX(-0.01em);
   }
 
   94% {
-    opacity: 0.16;
-    clip-path: inset(58% 0 18% 0);
+    text-shadow:
+      0.025em 0 oklch(0.78 0.18 196 / 0.35),
+      -0.025em 0 var(--signal);
+    transform: translateX(0.01em);
   }
 
   95% {
-    opacity: 0.28;
-    clip-path: inset(18% 0 52% 0);
-  }
-
-  96% {
-    opacity: 0;
+    text-shadow: none;
+    transform: translateX(0);
   }
 }
 
