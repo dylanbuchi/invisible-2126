@@ -20,7 +20,7 @@ bun run build
 
 ## Deployment
 
-This is a static-friendly Next.js App Router page with no backend, database, auth, payments, or external API requirement.
+This is a static-friendly Next.js App Router page with no backend, database, auth, payments, external API requirement, or external font fetch.
 
 For A3, use the default Next.js build settings unless the platform specifies otherwise:
 

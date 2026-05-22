@@ -126,11 +126,30 @@ const commandResponses: Record<string, string[]> = {
     "Frontend, product thinking, automation, AI workflows, deployment, UX polish.",
   ],
   "/contact": ["Signal channel available: contact@invisible.com"],
+  "/timeline": [
+    "2026: self-directed builder era.",
+    "2034: first autonomous client systems.",
+    "2058: human-in-the-loop software studios.",
+    "2091: interface minimalism collapse.",
+    "2126: operator archive recovered.",
+  ],
+  "/archive": [
+    "Node 7F-2126 is public. Identity remains sealed. Systems remain inspectable.",
+  ],
   "/clearance": ["Public archive access granted."],
   "/signal": ["Signal detected. Transmission panel exposed."],
 };
 
-const commandList = ["/whoami", "/systems", "/skills", "/contact", "/clearance", "/signal"];
+const commandList = [
+  "/whoami",
+  "/systems",
+  "/skills",
+  "/contact",
+  "/timeline",
+  "/archive",
+  "/clearance",
+  "/signal",
+];
 
 function scrollToSection(id: string) {
   const target = document.getElementById(id);
@@ -153,12 +172,14 @@ export default function Home() {
   const [signalActive, setSignalActive] = useState(false);
   const [signalSent, setSignalSent] = useState(false);
   const [gateResolved, setGateResolved] = useState(false);
+  const [archiveUnlocked, setArchiveUnlocked] = useState(false);
+  const [unlockBurst, setUnlockBurst] = useState(false);
   const entryIdRef = useRef(1);
   const terminalInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(() => setGateResolved(true), reducedMotion ? 0 : 1450);
+    const timer = window.setTimeout(() => setGateResolved(true), reducedMotion ? 0 : 1100);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -200,7 +221,7 @@ export default function Home() {
     const lines =
       commandResponses[command] ?? [
         "Command not archived.",
-        "Available: /whoami /systems /skills /contact /clearance /signal",
+        "Available: /whoami /systems /skills /contact /timeline /archive /clearance /signal",
       ];
 
     const entryId = entryIdRef.current;
@@ -223,12 +244,29 @@ export default function Home() {
     runCommand(terminalInput);
   }
 
+  function unlockArchive() {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setArchiveUnlocked(true);
+    setUnlockBurst(true);
+    window.setTimeout(() => scrollToSection("operator"), reducedMotion ? 0 : 420);
+    window.setTimeout(() => setUnlockBurst(false), 1200);
+  }
+
+  const heroScanTiles = archiveUnlocked
+    ? ["ACCESS: GRANTED", "SOURCE: HUMAN", "RECORD: PRESERVED"]
+    : ["SCAN: CLEAN", "SOURCE: HUMAN", "RECORD: PRESERVED"];
+
   return (
-    <main className={`archive-shell min-h-screen overflow-hidden ${signalActive ? "signal-active" : ""}`}>
+    <main
+      className={`archive-shell min-h-screen overflow-hidden ${signalActive ? "signal-active" : ""} ${
+        unlockBurst ? "unlock-burst" : ""
+      } ${archiveUnlocked ? "archive-unlocked" : ""}`}
+    >
       <div className={`intro-lock ${gateResolved ? "intro-lock--done" : ""}`} aria-hidden="true">
         <div className="intro-lock__frame">
-          <span>ACCESS REQUEST</span>
-          <strong className="micro-glitch">PUBLIC ARCHIVE NODE 7F-2126</strong>
+          <span>ACCESS REQUEST // PUBLIC ARCHIVE NODE 7F-2126</span>
+          <strong className="micro-glitch">INVISIBLE // 2126</strong>
+          <em>IDENTITY REDACTED. WORK PRESERVED.</em>
           <i />
         </div>
       </div>
@@ -238,6 +276,7 @@ export default function Home() {
         <div className="noise-field" />
         <div className="scan-field" />
       </div>
+      <div className="unlock-sweep" aria-hidden="true" />
 
       <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:min-h-screen lg:px-10">
         <div className="mx-auto flex w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm lg:min-h-[calc(100vh-2.5rem)]">
@@ -271,7 +310,9 @@ export default function Home() {
                   {statuses.map(([label, value]) => (
                     <div key={label} className="bg-[oklch(0.105_0.02_185_/_0.94)] p-3">
                       <span className="block text-[oklch(0.52_0.045_190)]">{label}</span>
-                      <strong className="mt-2 block font-medium text-[oklch(0.86_0.17_164)]">{value}</strong>
+                      <strong className="mt-2 block font-medium text-[oklch(0.86_0.17_164)]">
+                        {archiveUnlocked && label === "CLEARANCE" ? "GRANTED" : value}
+                      </strong>
                     </div>
                   ))}
                 </div>
@@ -291,10 +332,10 @@ export default function Home() {
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                   <button
                     type="button"
-                    onClick={() => scrollToSection("operator")}
+                    onClick={unlockArchive}
                     className="group relative min-h-12 overflow-hidden border border-[oklch(0.82_0.2_164_/_0.72)] bg-[oklch(0.78_0.2_162)] px-6 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-[oklch(0.13_0.03_175)] shadow-[0_0_34px_oklch(0.78_0.2_162_/_0.24)] transition hover:bg-[oklch(0.88_0.18_158)]"
                   >
-                    <span className="relative z-10">Enter Archive</span>
+                    <span className="relative z-10">{archiveUnlocked ? "Archive Open" : "Enter Archive"}</span>
                     <span className="button-sweep" />
                   </button>
                   <button
@@ -312,16 +353,17 @@ export default function Home() {
               <div className="hero-orbit absolute inset-0" />
               <div className="absolute inset-x-8 top-8 z-10 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[oklch(0.66_0.08_185)]">
                 <span>ACCESS SCAN</span>
-                <span>{gateResolved ? "VERIFIED" : "VERIFYING"}</span>
+                <span>{archiveUnlocked ? "ACCESS GRANTED" : gateResolved ? "VERIFIED" : "VERIFYING"}</span>
               </div>
               <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
                 <div className="identity-frame relative w-full max-w-[520px]">
                   <Image
-                    src="/assets/archive-mask.png"
+                    src="/assets/archive-mask.webp"
                     alt="Abstract encrypted avatar glyph for the redacted operator"
-                    width={1254}
-                    height={1254}
+                    width={900}
+                    height={900}
                     priority
+                    unoptimized
                     className="archive-mask"
                   />
                   <div className="identity-frame__plate">
@@ -332,7 +374,7 @@ export default function Home() {
               </div>
               <div className="hero-scan absolute inset-0 z-20" aria-hidden="true" />
               <div className="absolute bottom-8 left-8 right-8 z-30 grid gap-px border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.72_0.18_174_/_0.18)] font-mono text-[0.65rem] uppercase tracking-[0.16em] text-[oklch(0.72_0.06_185)] sm:grid-cols-3">
-                {["SCAN: CLEAN", "SOURCE: HUMAN", "RECORD: PRESERVED"].map((item) => (
+                {heroScanTiles.map((item) => (
                   <div key={item} className="bg-[oklch(0.09_0.018_188_/_0.88)] p-3">
                     <span className="status-dot" />
                     {item}

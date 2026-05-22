@@ -10,7 +10,7 @@ Near-black and graphite carry the full surface. One dominant cyan-green signal c
 
 ## Typography
 
-Use the existing self-hosted Geist Sans and Geist Mono. Sans handles high-impact display and body copy; mono is reserved for command, metadata, file labels, and terminal surfaces where the archive concept requires it.
+Use a clean system sans stack for high-impact display and body copy, plus a system mono stack for command, metadata, file labels, and terminal surfaces. This avoids external font fetches during deployment.
 
 ## Components
 
@@ -24,4 +24,3 @@ Use the existing self-hosted Geist Sans and Geist Mono. Sans handles high-impact
 ## Motion
 
 Use restrained scan, glow, and reveal motion. Respect reduced-motion preferences.
-
