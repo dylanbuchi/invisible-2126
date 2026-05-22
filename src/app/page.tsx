@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 type TerminalEntry = {
+  id: number;
   command: string;
   lines: string[];
 };
@@ -143,12 +144,16 @@ export default function Home() {
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalHistory, setTerminalHistory] = useState<TerminalEntry[]>([
     {
+      id: 0,
       command: "/clearance",
       lines: ["Public archive access granted."],
     },
   ]);
+  const [latestEntryId, setLatestEntryId] = useState(0);
   const [signalActive, setSignalActive] = useState(false);
+  const [signalSent, setSignalSent] = useState(false);
   const [gateResolved, setGateResolved] = useState(false);
+  const entryIdRef = useRef(1);
   const terminalInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -188,6 +193,7 @@ export default function Home() {
     if (command === "/clear") {
       setTerminalHistory([]);
       setTerminalInput("");
+      setLatestEntryId(-1);
       return;
     }
 
@@ -197,11 +203,16 @@ export default function Home() {
         "Available: /whoami /systems /skills /contact /clearance /signal",
       ];
 
-    setTerminalHistory((history) => [...history, { command, lines }].slice(-8));
+    const entryId = entryIdRef.current;
+    entryIdRef.current += 1;
+
+    setTerminalHistory((history) => [...history, { id: entryId, command, lines }].slice(-8));
+    setLatestEntryId(entryId);
     setTerminalInput("");
 
     if (command === "/signal") {
       setSignalActive(true);
+      setSignalSent(true);
       window.setTimeout(() => scrollToSection("contact"), 180);
       window.setTimeout(() => setSignalActive(false), 1400);
     }
@@ -217,7 +228,9 @@ export default function Home() {
       <div className={`intro-lock ${gateResolved ? "intro-lock--done" : ""}`} aria-hidden="true">
         <div className="intro-lock__frame">
           <span>ACCESS REQUEST</span>
-          <strong>PUBLIC ARCHIVE NODE 7F-2126</strong>
+          <strong className="micro-glitch" data-text="PUBLIC ARCHIVE NODE 7F-2126">
+            PUBLIC ARCHIVE NODE 7F-2126
+          </strong>
           <i />
         </div>
       </div>
@@ -265,7 +278,10 @@ export default function Home() {
                   ))}
                 </div>
 
-                <h1 className="max-w-5xl text-balance text-[clamp(3.2rem,10vw,9.4rem)] font-semibold leading-[0.82] tracking-normal text-[oklch(0.91_0.035_176)]">
+                <h1
+                  className="glitch-title max-w-5xl text-balance text-[clamp(3.2rem,10vw,9.4rem)] font-semibold leading-[0.82] tracking-normal text-[oklch(0.91_0.035_176)]"
+                  data-text="INVISIBLE // 2126"
+                >
                   INVISIBLE <span className="text-[oklch(0.78_0.19_166)]">{"//"}</span> 2126
                 </h1>
                 <p className="mt-6 font-mono text-[clamp(1rem,2.2vw,1.55rem)] uppercase tracking-[0.12em] text-[oklch(0.82_0.17_166)]">
@@ -313,7 +329,9 @@ export default function Home() {
                   />
                   <div className="identity-frame__plate">
                     <span>IDENTITY HASH</span>
-                    <strong>{"██-██-██ // REDACTED"}</strong>
+                    <strong className="micro-glitch" data-text="██-██-██ // REDACTED">
+                      {"██-██-██ // REDACTED"}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -344,9 +362,20 @@ export default function Home() {
             </div>
             <dl className="operator-fields">
               {operatorFields.map(([label, value]) => (
-                <div key={label}>
+                <div key={label} className={label === "Identity" || label === "Origin" ? "operator-field--redacted" : ""}>
                   <dt>{label}</dt>
-                  <dd className={value === "REDACTED" ? "redacted-text" : ""}>{value}</dd>
+                  <dd className={label === "Identity" || label === "Origin" ? "redacted-reveal" : ""}>
+                    {label === "Identity" || label === "Origin" ? (
+                      <>
+                        <span className="redacted-mask" aria-hidden="true">
+                          ████████
+                        </span>
+                        <span className="redacted-value">{value}</span>
+                      </>
+                    ) : (
+                      value
+                    )}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -442,14 +471,14 @@ export default function Home() {
               <span>PUBLIC SESSION</span>
             </div>
             <div className="terminal-output" aria-live="polite">
-              {terminalHistory.map((entry, index) => (
-                <div key={`${entry.command}-${index}`} className="terminal-entry">
+              {terminalHistory.map((entry) => (
+                <div key={entry.id} className="terminal-entry">
                   <p>
                     <span>&gt;</span> {entry.command}
                   </p>
                   {entry.lines.map((line) => (
                     <p key={line} className="terminal-line">
-                      {line}
+                      <TypingLine text={line} active={entry.id === latestEntryId} />
                     </p>
                   ))}
                 </div>
@@ -510,11 +539,61 @@ export default function Home() {
               <span className="signal-wave" />
               <p>Signal channel</p>
               <strong>contact@invisible.com</strong>
-              <a href="mailto:contact@invisible.com">Open Channel</a>
+              <button
+                type="button"
+                onClick={() => {
+                  setSignalSent(true);
+                  runCommand("/signal");
+                }}
+              >
+                {signalSent ? "Signal Sent" : "Open Channel"}
+              </button>
+              <small>{signalSent ? "Transmission logged. Public archive channel remains open." : "Awaiting outbound signal."}</small>
             </div>
           </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function TypingLine({ text, active }: { text: string; active: boolean }) {
+  const [visibleText, setVisibleText] = useState(active ? "" : text);
+
+  useEffect(() => {
+    const timers: number[] = [];
+
+    if (!active) {
+      timers.push(window.setTimeout(() => setVisibleText(text), 0));
+      return;
+    }
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      timers.push(window.setTimeout(() => setVisibleText(text), 0));
+      return;
+    }
+
+    timers.push(
+      window.setTimeout(() => {
+        setVisibleText("");
+        let index = 0;
+        const timer = window.setInterval(() => {
+          index += 2;
+          setVisibleText(text.slice(0, index));
+          if (index >= text.length) window.clearInterval(timer);
+        }, 18);
+        timers.push(timer);
+      }, 0),
+    );
+
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [active, text]);
+
+  return (
+    <>
+      {visibleText}
+      {active && visibleText.length < text.length ? <span className="typing-caret" aria-hidden="true" /> : null}
+    </>
   );
 }
