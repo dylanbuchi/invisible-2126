@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "rm -rf public/_next public/_not-found public/index.html public/index.txt public/404.html public/__next.*.txt public/icon.svg && next build && cp -R out/. public",
     "start": "next start",
     "lint": "eslint"
   },

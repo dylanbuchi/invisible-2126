@@ -26,4 +26,6 @@ For A3 static hosting:
 
 - Install command: `bun install`
 - Build command: `bun run build`
-- Output directory: `out`
+- Output directory: `public`
+
+The build still emits the canonical Next static export to `out`, then mirrors it into `public` because A3's ICP deploy step reads assets from `public`.

@@ -16,6 +16,11 @@
 # next.js
 /.next/
 /out/
+/public/_next/
+/public/_not-found/
+/public/*.html
+/public/*.txt
+/public/icon.svg
 
 # production
 /build
