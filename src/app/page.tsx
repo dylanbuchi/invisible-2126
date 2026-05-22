@@ -1,65 +1,480 @@
+"use client";
+
 import Image from "next/image";
+import { FormEvent, useEffect, useRef, useState } from "react";
+
+type TerminalEntry = {
+  command: string;
+  lines: string[];
+};
+
+const statuses = [
+  ["ARCHIVE NODE", "7F-2126"],
+  ["CLEARANCE", "PUBLIC"],
+  ["OPERATOR STATUS", "ACTIVE"],
+  ["IDENTITY", "REDACTED"],
+];
+
+const operatorFields = [
+  ["Identity", "REDACTED"],
+  ["Alias", "INVISIBLE"],
+  ["Role", "Independent Builder"],
+  ["Mode", "Human-in-the-loop"],
+  ["Status", "Active"],
+  ["Origin", "Withheld"],
+  ["Focus", "Interfaces / SaaS / Automation / AI Workflows"],
+];
+
+const capabilities = [
+  ["Web interfaces", "Responsive frontends with sharp interaction paths."],
+  ["SaaS prototypes", "Core workflow surfaces built for fast proof."],
+  ["AI-assisted workflows", "Human-reviewed systems with useful guardrails."],
+  ["Automation systems", "Repeatable admin flows reduced to signal."],
+  ["Client portals", "Secure-feeling intake, review, and status spaces."],
+  ["Internal tools", "Operational dashboards that remove ambiguity."],
+  ["Deployment-ready frontends", "Polished builds prepared for preview and launch."],
+  ["Product experiments", "Small bets with enough fidelity to judge."],
+];
+
+const projects = [
+  {
+    name: "Ledger Ghost",
+    category: "Bookkeeping context",
+    problem: "Collects missing transaction context, notes, and receipts without turning the client workflow into email archaeology.",
+    type: "SaaS workflow",
+    status: "Prototype",
+    risk: "Low",
+    utility: "High",
+    signal: 91,
+  },
+  {
+    name: "Reply Shield",
+    category: "Communication guardrail",
+    problem: "Structures guarded AI responses for local-business reviews and customer communication while keeping humans in control.",
+    type: "Response system",
+    status: "Prototype",
+    risk: "Low",
+    utility: "High",
+    signal: 87,
+  },
+  {
+    name: "Signal Funnel",
+    category: "Lead capture",
+    problem: "Turns service-business quote requests into a clean intake path with enough context for fast follow-up.",
+    type: "Conversion interface",
+    status: "Active build",
+    risk: "Medium",
+    utility: "High",
+    signal: 84,
+  },
+  {
+    name: "Ops Relay",
+    category: "Admin automation",
+    problem: "Creates a lightweight automation layer for repetitive reminders, admin tasks, and client follow-up workflows.",
+    type: "Automation layer",
+    status: "Prototype",
+    risk: "Low",
+    utility: "High",
+    signal: 89,
+  },
+];
+
+const timeline = [
+  ["2026", "Self-directed builder era"],
+  ["2034", "First autonomous client systems"],
+  ["2058", "Human-in-the-loop software studios"],
+  ["2091", "Interface minimalism collapse"],
+  ["2126", "Operator archive recovered"],
+];
+
+const commandResponses: Record<string, string[]> = {
+  "/whoami": [
+    "Identity unavailable.",
+    "Output verified: independent builder, software operator, human decision layer.",
+  ],
+  "/systems": ["Ledger Ghost", "Reply Shield", "Signal Funnel", "Ops Relay"],
+  "/skills": [
+    "Frontend, product thinking, automation, AI workflows, deployment, UX polish.",
+  ],
+  "/contact": ["Signal channel available. Replace with anonymous contact before launch."],
+  "/clearance": ["Public archive access granted."],
+  "/signal": ["Signal detected. Transmission panel exposed."],
+};
+
+const commandList = ["/whoami", "/systems", "/skills", "/contact", "/clearance", "/signal"];
+
+function scrollToSection(id: string) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+}
 
 export default function Home() {
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalHistory, setTerminalHistory] = useState<TerminalEntry[]>([
+    {
+      command: "/clearance",
+      lines: ["Public archive access granted."],
+    },
+  ]);
+  const [signalActive, setSignalActive] = useState(false);
+  const [gateResolved, setGateResolved] = useState(false);
+  const terminalInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => setGateResolved(true), reducedMotion ? 0 : 1450);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const revealTargets = Array.from(document.querySelectorAll("[data-reveal]"));
+
+    if (!("IntersectionObserver" in window)) {
+      revealTargets.forEach((target) => target.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
+    );
+
+    revealTargets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
+
+  function runCommand(rawCommand: string) {
+    const command = rawCommand.trim().toLowerCase();
+    if (!command) return;
+
+    if (command === "/clear") {
+      setTerminalHistory([]);
+      setTerminalInput("");
+      return;
+    }
+
+    const lines =
+      commandResponses[command] ?? [
+        "Command not archived.",
+        "Available: /whoami /systems /skills /contact /clearance /signal",
+      ];
+
+    setTerminalHistory((history) => [...history, { command, lines }].slice(-8));
+    setTerminalInput("");
+
+    if (command === "/signal") {
+      setSignalActive(true);
+      window.setTimeout(() => scrollToSection("contact"), 180);
+      window.setTimeout(() => setSignalActive(false), 1400);
+    }
+  }
+
+  function handleTerminalSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    runCommand(terminalInput);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={`archive-shell min-h-screen overflow-hidden ${signalActive ? "signal-active" : ""}`}>
+      <div className={`intro-lock ${gateResolved ? "intro-lock--done" : ""}`} aria-hidden="true">
+        <div className="intro-lock__frame">
+          <span>ACCESS REQUEST</span>
+          <strong>PUBLIC ARCHIVE NODE 7F-2126</strong>
+          <i />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-70">
+        <div className="grid-field" />
+        <div className="noise-field" />
+        <div className="scan-field" />
+      </div>
+
+      <section id="top" className="relative z-10 min-h-screen px-5 py-5 sm:px-7 lg:px-10">
+        <div className="mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm">
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[oklch(0.72_0.18_174_/_0.18)] px-4 py-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-[oklch(0.73_0.06_185)] sm:px-6">
+            <a href="#top" className="text-[oklch(0.83_0.18_172)] transition hover:text-[oklch(0.92_0.18_162)]">
+              {"INVISIBLE // 2126"}
+            </a>
+            <nav className="flex gap-3 sm:gap-5" aria-label="Archive navigation">
+              <a href="#operator" className="transition hover:text-[oklch(0.9_0.18_162)]">
+                File
+              </a>
+              <a href="#systems" className="transition hover:text-[oklch(0.9_0.18_162)]">
+                Systems
+              </a>
+              <a href="#terminal" className="transition hover:text-[oklch(0.9_0.18_162)]">
+                Console
+              </a>
+              <a href="#contact" className="transition hover:text-[oklch(0.9_0.18_162)]">
+                Signal
+              </a>
+            </nav>
+          </header>
+
+          <div className="grid flex-1 grid-cols-1 lg:grid-cols-[1.03fr_0.97fr]">
+            <div className="relative flex flex-col justify-between gap-12 border-b border-[oklch(0.72_0.18_174_/_0.16)] px-5 py-10 sm:px-8 sm:py-14 lg:border-b-0 lg:border-r lg:px-10 xl:px-12">
+              <div className="absolute left-5 top-5 h-20 w-px bg-[oklch(0.77_0.18_174_/_0.45)]" />
+              <div className="absolute right-7 top-16 hidden h-28 w-28 border-r border-t border-[oklch(0.77_0.18_174_/_0.28)] lg:block" />
+
+              <div data-reveal className="max-w-4xl">
+                <div className="mb-8 grid max-w-2xl grid-cols-2 gap-px border border-[oklch(0.72_0.18_174_/_0.18)] bg-[oklch(0.72_0.18_174_/_0.16)] font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[oklch(0.72_0.06_185)] sm:grid-cols-4">
+                  {statuses.map(([label, value]) => (
+                    <div key={label} className="bg-[oklch(0.105_0.02_185_/_0.94)] p-3">
+                      <span className="block text-[oklch(0.52_0.045_190)]">{label}</span>
+                      <strong className="mt-2 block font-medium text-[oklch(0.86_0.17_164)]">{value}</strong>
+                    </div>
+                  ))}
+                </div>
+
+                <h1 className="max-w-5xl text-balance text-[clamp(3.2rem,10vw,9.4rem)] font-semibold leading-[0.82] tracking-normal text-[oklch(0.91_0.035_176)]">
+                  INVISIBLE <span className="text-[oklch(0.78_0.19_166)]">{"//"}</span> 2126
+                </h1>
+                <p className="mt-6 font-mono text-[clamp(1rem,2.2vw,1.55rem)] uppercase tracking-[0.12em] text-[oklch(0.82_0.17_166)]">
+                  Identity redacted. Work preserved.
+                </p>
+                <p className="mt-7 max-w-2xl text-lg leading-8 text-[oklch(0.74_0.035_190)] sm:text-xl">
+                  An anonymous builder creating interfaces, automations, and software systems for a future where humans still ship.
+                </p>
+
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("operator")}
+                    className="group relative min-h-12 overflow-hidden border border-[oklch(0.82_0.2_164_/_0.72)] bg-[oklch(0.78_0.2_162)] px-6 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-[oklch(0.13_0.03_175)] shadow-[0_0_34px_oklch(0.78_0.2_162_/_0.24)] transition hover:bg-[oklch(0.88_0.18_158)]"
+                  >
+                    <span className="relative z-10">Enter Archive</span>
+                    <span className="button-sweep" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("systems")}
+                    className="min-h-12 border border-[oklch(0.72_0.18_174_/_0.35)] bg-[oklch(0.13_0.024_185_/_0.82)] px-6 font-mono text-sm uppercase tracking-[0.18em] text-[oklch(0.82_0.16_166)] transition hover:border-[oklch(0.82_0.2_164_/_0.72)] hover:bg-[oklch(0.18_0.04_180_/_0.9)]"
+                  >
+                    View Systems
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="hero-visual relative overflow-hidden bg-[oklch(0.075_0.018_190_/_0.88)]">
+              <div className="hero-orbit absolute inset-0" />
+              <div className="absolute inset-x-8 top-8 z-10 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[oklch(0.66_0.08_185)]">
+                <span>ACCESS SCAN</span>
+                <span>{gateResolved ? "VERIFIED" : "VERIFYING"}</span>
+              </div>
+              <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
+                <div className="identity-frame relative w-full max-w-[520px]">
+                  <Image
+                    src="/assets/archive-mask.png"
+                    alt="Abstract encrypted avatar glyph for the redacted operator"
+                    width={1254}
+                    height={1254}
+                    priority
+                    className="archive-mask"
+                  />
+                  <div className="identity-frame__plate">
+                    <span>IDENTITY HASH</span>
+                    <strong>{"██-██-██ // REDACTED"}</strong>
+                  </div>
+                </div>
+              </div>
+              <div className="hero-scan absolute inset-0 z-20" aria-hidden="true" />
+              <div className="absolute bottom-8 left-8 right-8 z-30 grid gap-px border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.72_0.18_174_/_0.18)] font-mono text-[0.65rem] uppercase tracking-[0.16em] text-[oklch(0.72_0.06_185)] sm:grid-cols-3">
+                {["SCAN: CLEAN", "SOURCE: HUMAN", "RECORD: PRESERVED"].map((item) => (
+                  <div key={item} className="bg-[oklch(0.09_0.018_188_/_0.88)] p-3">
+                    <span className="status-dot" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section id="operator" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+        <div data-reveal className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="section-index">
+            <span>01</span>
+            <h2>Operator File</h2>
+          </div>
+          <div className="operator-grid">
+            <div className="operator-avatar">
+              <div className="operator-avatar__glyph" />
+              <p>Not a brand. Not an influencer. A builder record.</p>
+            </div>
+            <dl className="operator-fields">
+              {operatorFields.map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd className={value === "REDACTED" ? "redacted-text" : ""}>{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+        <div data-reveal className="mx-auto max-w-7xl">
+          <div className="mb-10 flex flex-col justify-between gap-5 border-y border-[oklch(0.72_0.18_174_/_0.18)] py-6 lg:flex-row lg:items-end">
+            <div className="section-index">
+              <span>02</span>
+              <h2>Capabilities Matrix</h2>
+            </div>
+            <p className="max-w-xl text-base leading-7 text-[oklch(0.68_0.035_190)]">
+              Human-built systems. Interfaces for operational clarity. Proof of work, without identity.
+            </p>
+          </div>
+          <div className="capability-matrix">
+            {capabilities.map(([label, description]) => (
+              <article key={label} className="capability-module">
+                <div className="module-status">
+                  <span />
+                  ONLINE
+                </div>
+                <h3>{label}</h3>
+                <p>{description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="systems" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+        <div data-reveal className="mx-auto max-w-7xl">
+          <div className="archive-heading">
+            <div className="section-index">
+              <span>03</span>
+              <h2>Project Archive</h2>
+            </div>
+            <p>The operator remains unknown. The systems remain useful.</p>
+          </div>
+
+          <div className="project-archive">
+            {projects.map((project) => (
+              <article key={project.name} className="project-record">
+                <div className="record-topline">
+                  <span>ARCHIVED: 2126</span>
+                  <span>RATING: {project.signal}</span>
+                </div>
+                <h3>{project.name}</h3>
+                <p className="record-category">{project.category}</p>
+                <p className="record-problem">{project.problem}</p>
+                <div className="record-meta">
+                  <span>SYSTEM TYPE: {project.type}</span>
+                  <span>STATUS: {project.status}</span>
+                  <span>RISK: {project.risk}</span>
+                  <span>UTILITY: {project.utility}</span>
+                </div>
+                <div className="signal-meter" aria-label={`${project.name} signal strength ${project.signal} percent`}>
+                  <span style={{ width: `${project.signal}%` }} />
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="terminal" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+        <div data-reveal className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.86fr_1.14fr]">
+          <div className="section-index">
+            <span>04</span>
+            <h2>Interactive Terminal</h2>
+            <p>Click a command or type one into the console. The terminal is decorative, local, and reliable.</p>
+          </div>
+
+          <div className="terminal-panel" onClick={() => terminalInputRef.current?.focus()}>
+            <div className="terminal-topbar">
+              <span>invisible.archive</span>
+              <span>PUBLIC SESSION</span>
+            </div>
+            <div className="terminal-output" aria-live="polite">
+              {terminalHistory.map((entry, index) => (
+                <div key={`${entry.command}-${index}`} className="terminal-entry">
+                  <p>
+                    <span>&gt;</span> {entry.command}
+                  </p>
+                  {entry.lines.map((line) => (
+                    <p key={line} className="terminal-line">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="command-row">
+              {commandList.map((command) => (
+                <button key={command} type="button" onClick={() => runCommand(command)}>
+                  {command}
+                </button>
+              ))}
+            </div>
+            <form className="terminal-input-row" onSubmit={handleTerminalSubmit}>
+              <span>&gt;</span>
+              <input
+                ref={terminalInputRef}
+                value={terminalInput}
+                onChange={(event) => setTerminalInput(event.target.value)}
+                placeholder="/whoami"
+                aria-label="Terminal command"
+                autoComplete="off"
+              />
+              <button type="submit">Run</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+        <div data-reveal className="mx-auto max-w-7xl">
+          <div className="archive-heading">
+            <div className="section-index">
+              <span>05</span>
+              <h2>Future Timeline</h2>
+            </div>
+            <p>A compact record recovered from the automation age.</p>
+          </div>
+          <ol className="timeline">
+            {timeline.map(([year, event]) => (
+              <li key={year}>
+                <span>{year}</span>
+                <p>{event}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section id="contact" className="relative z-10 px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+        <div data-reveal className="mx-auto max-w-7xl">
+          <div className="final-transmission">
+            <div>
+              <span className="transmission-label">FINAL TRANSMISSION</span>
+              <h2>Send Signal</h2>
+              <p>For collaborations, systems, prototypes, or encrypted opportunities.</p>
+            </div>
+            <div className="signal-card">
+              <span className="signal-wave" />
+              <p>Signal channel</p>
+              <strong>contact@invisible.local</strong>
+              <a href="mailto:contact@invisible.local">Open Channel</a>
+              <small>Replace with anonymous contact before deployment</small>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
