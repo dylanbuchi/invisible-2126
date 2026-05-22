@@ -19,7 +19,7 @@ Classified, cinematic, precise, technical, restrained, mysterious.
 - No real name, face, location, personal photos, email, or identifying personal details.
 - No unrelated personal-topic references.
 - No backend, database, auth, payments, or external API requirement.
-- Use only placeholder anonymous contact details.
+- Use only fictional anonymous contact details.
 
 ## Core Message
 

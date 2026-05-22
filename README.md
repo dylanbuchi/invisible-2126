@@ -27,6 +27,3 @@ For A3, use the default Next.js build settings unless the platform specifies oth
 - Install command: `bun install`
 - Build command: `bun run build`
 - Output/runtime: Next.js
-
-Replace the anonymous contact placeholder before launch if a real signal channel is required.
-

@@ -96,7 +96,7 @@ const commandResponses: Record<string, string[]> = {
   "/skills": [
     "Frontend, product thinking, automation, AI workflows, deployment, UX polish.",
   ],
-  "/contact": ["Signal channel available. Replace with anonymous contact before launch."],
+  "/contact": ["Signal channel available: contact@invisible.com"],
   "/clearance": ["Public archive access granted."],
   "/signal": ["Signal detected. Transmission panel exposed."],
 };
@@ -468,9 +468,8 @@ export default function Home() {
             <div className="signal-card">
               <span className="signal-wave" />
               <p>Signal channel</p>
-              <strong>contact@invisible.local</strong>
-              <a href="mailto:contact@invisible.local">Open Channel</a>
-              <small>Replace with anonymous contact before deployment</small>
+              <strong>contact@invisible.com</strong>
+              <a href="mailto:contact@invisible.com">Open Channel</a>
             </div>
           </div>
         </div>
