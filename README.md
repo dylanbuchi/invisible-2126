@@ -22,8 +22,8 @@ bun run build
 
 This is a static-friendly Next.js App Router page with no backend, database, auth, payments, external API requirement, or external font fetch.
 
-For A3, use the default Next.js build settings unless the platform specifies otherwise:
+For A3 static hosting:
 
 - Install command: `bun install`
 - Build command: `bun run build`
-- Output/runtime: Next.js
+- Output directory: `out`
