@@ -27,14 +27,14 @@ const operatorFields = [
 ];
 
 const capabilities = [
-  ["Web interfaces", "Responsive frontends with sharp interaction paths."],
-  ["SaaS prototypes", "Core workflow surfaces built for fast proof."],
+  ["Adaptive interface shells", "Future-coded frontends with sharp interaction paths."],
+  ["Workflow system prototypes", "Core workflow surfaces built for fast proof."],
   ["AI-assisted workflows", "Human-reviewed systems with useful guardrails."],
   ["Automation systems", "Repeatable admin flows reduced to signal."],
   ["Client portals", "Secure-feeling intake, review, and status spaces."],
   ["Internal tools", "Operational dashboards that remove ambiguity."],
   ["Deployment-ready frontends", "Polished builds prepared for preview and launch."],
-  ["Product experiments", "Small bets with enough fidelity to judge."],
+  ["Operational experiments", "Small bets with enough fidelity to judge."],
 ];
 
 const projects = [
@@ -48,6 +48,12 @@ const projects = [
     utility: "High",
     signal: 91,
     map: "ledger",
+    artifact: "RECOVERED INTERFACE: intake queue",
+    flow: {
+      input: "uncategorized transactions + receipts",
+      system: "client clarification queue",
+      output: "review-ready bookkeeping context",
+    },
     evidence: [
       ["ROLE", "Builder"],
       ["STACK", "Next.js / intake UX / file capture"],
@@ -65,6 +71,12 @@ const projects = [
     utility: "High",
     signal: 87,
     map: "reply",
+    artifact: "RECOVERED INTERFACE: response console",
+    flow: {
+      input: "customer review",
+      system: "guarded response generator",
+      output: "safe, on-brand reply options",
+    },
     evidence: [
       ["ROLE", "Builder"],
       ["STACK", "React / guardrails / review states"],
@@ -82,6 +94,12 @@ const projects = [
     utility: "High",
     signal: 84,
     map: "signal",
+    artifact: "RECOVERED INTERFACE: lead router",
+    flow: {
+      input: "visitor intent",
+      system: "service quote router",
+      output: "qualified lead packet",
+    },
     evidence: [
       ["ROLE", "Builder"],
       ["STACK", "Next.js / forms / routing"],
@@ -99,6 +117,12 @@ const projects = [
     utility: "High",
     signal: 89,
     map: "ops",
+    artifact: "RECOVERED INTERFACE: follow-up relay",
+    flow: {
+      input: "admin repetition",
+      system: "reminder + workflow layer",
+      output: "fewer manual follow-ups",
+    },
     evidence: [
       ["ROLE", "Builder"],
       ["STACK", "Workflow logic / reminders / UI"],
@@ -125,7 +149,7 @@ const commandResponses: Record<string, string[]> = {
   "/skills": [
     "Frontend, product thinking, automation, AI workflows, deployment, UX polish.",
   ],
-  "/contact": ["Signal channel available: contact@invisible.com"],
+  "/contact": ["Signal channel available: node-7f@archive.invalid"],
   "/timeline": [
     "2026: self-directed builder era.",
     "2034: first autonomous client systems.",
@@ -387,7 +411,7 @@ export default function Home() {
             <div className="hero-visual relative overflow-hidden bg-[oklch(0.075_0.018_190_/_0.88)]">
               <div className="hero-orbit absolute inset-0" />
               <div className="hero-scan-label absolute inset-x-8 top-8 z-10 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[oklch(0.66_0.08_185)]">
-                <span>ACCESS SCAN</span>
+                <span>{archiveUnlocked ? "ARCHIVE OPEN" : "ACCESS SCAN"}</span>
                 <span>{archiveUnlocked ? "ACCESS GRANTED" : gateResolved ? "VERIFIED" : "VERIFYING"}</span>
               </div>
               <div className="data-shards hidden sm:block" aria-hidden="true">
@@ -435,6 +459,10 @@ export default function Home() {
           <div className="operator-grid">
             <div className="operator-avatar">
               <div className="operator-avatar__glyph" />
+              <div className={`operator-verify ${archiveUnlocked ? "operator-verify--open" : ""}`}>
+                <span>{archiveUnlocked ? "VERIFIED ACCESS" : "SEALED FILE"}</span>
+                <strong>{archiveUnlocked ? "Builder evidence unlocked" : "Awaiting archive entry"}</strong>
+              </div>
               <p>Not a brand. Not an influencer. A builder record.</p>
             </div>
             <dl className="operator-fields">
@@ -505,6 +533,7 @@ export default function Home() {
                 </div>
                 <h3>{project.name}</h3>
                 <p className="record-category">{project.category}</p>
+                <p className="record-artifact">{project.artifact}</p>
                 <div className="record-dossier">
                   <div className="record-map" aria-hidden="true">
                     <span />
@@ -517,6 +546,22 @@ export default function Home() {
                       </div>
                     ))}
                   </dl>
+                </div>
+                <div className="record-flow" aria-label={`${project.name} archive evidence path`}>
+                  <div>
+                    <span>INPUT</span>
+                    <strong>{project.flow.input}</strong>
+                  </div>
+                  <i aria-hidden="true">→</i>
+                  <div>
+                    <span>SYSTEM</span>
+                    <strong>{project.flow.system}</strong>
+                  </div>
+                  <i aria-hidden="true">→</i>
+                  <div>
+                    <span>OUTPUT</span>
+                    <strong>{project.flow.output}</strong>
+                  </div>
                 </div>
                 <p className="record-problem">{project.problem}</p>
                 <div className="record-meta">
@@ -583,6 +628,11 @@ export default function Home() {
                 ref={terminalInputRef}
                 value={terminalInput}
                 onChange={(event) => setTerminalInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter") return;
+                  event.preventDefault();
+                  runCommand(terminalInput);
+                }}
                 placeholder="/whoami"
                 aria-label="Terminal command"
                 autoComplete="off"
@@ -624,7 +674,7 @@ export default function Home() {
             <div className="signal-card">
               <span className="signal-wave" />
               <p>Signal channel</p>
-              <strong>contact@invisible.com</strong>
+              <strong>node-7f@archive.invalid</strong>
               <button
                 type="button"
                 onClick={() => {
