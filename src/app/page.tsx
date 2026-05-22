@@ -352,11 +352,11 @@ export default function Home() {
 
             <div className="hero-visual relative overflow-hidden bg-[oklch(0.075_0.018_190_/_0.88)]">
               <div className="hero-orbit absolute inset-0" />
-              <div className="absolute inset-x-8 top-8 z-10 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[oklch(0.66_0.08_185)]">
+              <div className="hero-scan-label absolute inset-x-8 top-8 z-10 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[oklch(0.66_0.08_185)]">
                 <span>ACCESS SCAN</span>
                 <span>{archiveUnlocked ? "ACCESS GRANTED" : gateResolved ? "VERIFIED" : "VERIFYING"}</span>
               </div>
-              <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
+              <div className="hero-visual-stage absolute inset-0 z-10 flex items-center justify-center p-8">
                 <div className="identity-frame relative w-full max-w-[520px]">
                   <Image
                     src="/assets/archive-mask.webp"
@@ -374,7 +374,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="hero-scan absolute inset-0 z-20" aria-hidden="true" />
-              <div className="absolute bottom-8 left-8 right-8 z-30 grid gap-px border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.72_0.18_174_/_0.18)] font-mono text-[0.65rem] uppercase tracking-[0.16em] text-[oklch(0.72_0.06_185)] sm:grid-cols-3">
+              <div className="hero-status-grid absolute bottom-8 left-8 right-8 z-30 grid gap-px border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.72_0.18_174_/_0.18)] font-mono text-[0.65rem] uppercase tracking-[0.16em] text-[oklch(0.72_0.06_185)] sm:grid-cols-3">
                 {heroScanTiles.map((item) => (
                   <div key={item} className="bg-[oklch(0.09_0.018_188_/_0.88)] p-3">
                     <span className="status-dot" />
