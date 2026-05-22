@@ -296,6 +296,7 @@ button:hover .button-sweep {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
+  min-height: 2.35rem;
 }
 
 .brand-dot {
@@ -309,6 +310,9 @@ button:hover .button-sweep {
 
 .archive-header nav a {
   position: relative;
+  display: inline-flex;
+  min-height: 2.35rem;
+  align-items: center;
 }
 
 .archive-header nav a::after {
@@ -1035,9 +1039,10 @@ button:hover .button-sweep {
 
 .command-row button,
 .terminal-input-row button {
+  min-height: 2.75rem;
   border: 1px solid oklch(0.72 0.18 174 / 0.26);
   background: oklch(0.13 0.024 185);
-  padding: 0.55rem 0.7rem;
+  padding: 0.65rem 0.78rem;
   color: var(--signal);
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.76rem;
@@ -1526,6 +1531,15 @@ button:hover .button-sweep {
     scroll-behavior: auto;
   }
 
+  .archive-header nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .archive-header nav a {
+    min-height: 2.5rem;
+  }
+
   .capability-matrix,
   .timeline {
     grid-template-columns: 1fr;
@@ -1679,6 +1693,25 @@ button:hover .button-sweep {
     max-height: 18rem;
   }
 
+  .command-row {
+    gap: 0.6rem;
+    padding: 0.85rem;
+  }
+
+  .command-row button {
+    flex: 1 1 calc(50% - 0.6rem);
+    min-width: 8.1rem;
+  }
+
+  .terminal-input-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .terminal-input-row button {
+    grid-column: 2;
+    width: 100%;
+  }
+
   .timeline {
     margin-top: 1.5rem;
   }
@@ -1702,6 +1735,20 @@ button:hover .button-sweep {
   .terminal-topbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (hover: none) {
+  .operator-field--redacted .redacted-mask {
+    opacity: 0.08;
+    filter: blur(3px);
+    transform: translateY(-0.2rem);
+  }
+
+  .operator-field--redacted .redacted-value {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
   }
 }
 
