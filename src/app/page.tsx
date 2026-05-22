@@ -151,6 +151,25 @@ const commandList = [
   "/signal",
 ];
 
+const dataShards = [
+  "NODE 7F",
+  "HUMAN LOOP",
+  "2126",
+  "REDACTED",
+  "SYSTEMS: 04",
+  "CLEARANCE: PUBLIC",
+];
+
+const commandScrollTargets: Record<string, string> = {
+  "/whoami": "operator",
+  "/systems": "systems",
+  "/skills": "capabilities",
+  "/timeline": "timeline",
+  "/contact": "contact",
+  "/signal": "contact",
+  "/archive": "top",
+};
+
 function scrollToSection(id: string) {
   const target = document.getElementById(id);
   if (!target) return;
@@ -231,10 +250,14 @@ export default function Home() {
     setLatestEntryId(entryId);
     setTerminalInput("");
 
+    const scrollTarget = commandScrollTargets[command];
+    if (scrollTarget) {
+      window.setTimeout(() => scrollToSection(scrollTarget), 220);
+    }
+
     if (command === "/signal") {
       setSignalActive(true);
       setSignalSent(true);
-      window.setTimeout(() => scrollToSection("contact"), 180);
       window.setTimeout(() => setSignalActive(false), 1400);
     }
   }
@@ -277,6 +300,13 @@ export default function Home() {
         <div className="scan-field" />
       </div>
       <div className="unlock-sweep" aria-hidden="true" />
+      <div
+        className={`archive-hud ${archiveUnlocked ? "archive-hud--visible" : ""}`}
+        aria-live="polite"
+      >
+        <span>ACCESS GRANTED</span>
+        <strong>Archive node 7F-2126 unlocked</strong>
+      </div>
 
       <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:min-h-screen lg:px-10">
         <div className="mx-auto flex w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm lg:min-h-[calc(100vh-2.5rem)]">
@@ -356,6 +386,11 @@ export default function Home() {
                 <span>ACCESS SCAN</span>
                 <span>{archiveUnlocked ? "ACCESS GRANTED" : gateResolved ? "VERIFIED" : "VERIFYING"}</span>
               </div>
+              <div className="data-shards hidden sm:block" aria-hidden="true">
+                {dataShards.map((shard) => (
+                  <span key={shard}>{shard}</span>
+                ))}
+              </div>
               <div className="hero-visual-stage absolute inset-0 z-10 flex items-center justify-center p-8">
                 <div className="identity-frame relative w-full max-w-[520px]">
                   <Image
@@ -421,7 +456,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
+      <section id="capabilities" className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto max-w-7xl">
           <div className="mb-10 flex flex-col justify-between gap-5 border-y border-[oklch(0.72_0.18_174_/_0.18)] py-6 lg:flex-row lg:items-end">
             <div className="section-index">
@@ -545,7 +580,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
+      <section id="timeline" className="relative z-10 px-5 py-12 sm:px-7 sm:py-16 lg:px-10 lg:py-20">
         <div data-reveal className="mx-auto max-w-7xl">
           <div className="archive-heading">
             <div className="section-index">
