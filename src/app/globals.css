@@ -216,6 +216,60 @@ button:hover .button-sweep {
   transform: translateX(110%);
 }
 
+.archive-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.archive-header::after {
+  position: absolute;
+  right: 100%;
+  bottom: 0;
+  width: 42%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--signal), transparent);
+  box-shadow: 0 0 18px oklch(0.82 0.2 164 / 0.75);
+  content: "";
+  animation: header-trace 3.2s linear infinite;
+}
+
+.archive-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.brand-dot {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: var(--signal);
+  box-shadow: 0 0 16px oklch(0.82 0.2 164 / 0.75);
+  animation: status-breathe 1.8s ease-in-out infinite;
+}
+
+.archive-header nav a {
+  position: relative;
+}
+
+.archive-header nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.35rem;
+  left: 0;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--signal);
+  box-shadow: 0 0 14px oklch(0.82 0.2 164 / 0.65);
+  content: "";
+  transition: transform 220ms ease;
+}
+
+.archive-header nav a:hover::after {
+  transform: scaleX(1);
+}
+
 .glitch-title,
 .micro-glitch {
   position: relative;
@@ -229,6 +283,7 @@ button:hover .button-sweep {
     linear-gradient(90deg, transparent 49.8%, oklch(0.8 0.18 164 / 0.2) 50%, transparent 50.2%),
     linear-gradient(0deg, transparent 49.8%, oklch(0.8 0.18 164 / 0.2) 50%, transparent 50.2%);
   opacity: 0.88;
+  animation: orbit-drift 22s linear infinite;
 }
 
 .hero-visual {
@@ -1038,6 +1093,43 @@ button:hover .button-sweep {
 
   100% {
     box-shadow: 0 0 0 0.9rem oklch(0.82 0.2 164 / 0);
+  }
+}
+
+@keyframes header-trace {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(100vw + 42%));
+  }
+}
+
+@keyframes status-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.88);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes orbit-drift {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.025);
+  }
+
+  to {
+    transform: rotate(360deg) scale(1);
   }
 }
 

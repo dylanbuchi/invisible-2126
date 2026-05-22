@@ -280,8 +280,9 @@ export default function Home() {
 
       <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:min-h-screen lg:px-10">
         <div className="mx-auto flex w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm lg:min-h-[calc(100vh-2.5rem)]">
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[oklch(0.72_0.18_174_/_0.18)] px-4 py-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-[oklch(0.73_0.06_185)] sm:px-6">
-            <a href="#top" className="text-[oklch(0.83_0.18_172)] transition hover:text-[oklch(0.92_0.18_162)]">
+          <header className="archive-header flex flex-wrap items-center justify-between gap-3 border-b border-[oklch(0.72_0.18_174_/_0.18)] px-4 py-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-[oklch(0.73_0.06_185)] sm:px-6">
+            <a href="#top" className="archive-brand text-[oklch(0.83_0.18_172)] transition hover:text-[oklch(0.92_0.18_162)]">
+              <span className="brand-dot" aria-hidden="true" />
               {"INVISIBLE // 2126"}
             </a>
             <nav className="flex gap-3 sm:gap-5" aria-label="Archive navigation">
