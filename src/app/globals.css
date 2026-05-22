@@ -26,6 +26,7 @@
 
 html {
   background: var(--background);
+  overflow-anchor: none;
   scroll-behavior: smooth;
 }
 
@@ -969,11 +970,16 @@ button:hover .button-sweep {
 }
 
 .terminal-panel {
+  inline-size: 100%;
+  min-width: 0;
+  min-inline-size: 0;
+  width: 100%;
   border: 1px solid oklch(0.72 0.18 174 / 0.28);
   background:
     linear-gradient(180deg, oklch(0.105 0.02 190 / 0.96), oklch(0.07 0.016 190 / 0.96)),
     var(--graphite);
   box-shadow: 0 0 70px oklch(0.82 0.2 164 / 0.1);
+  overflow-anchor: none;
   cursor: text;
 }
 
@@ -991,9 +997,9 @@ button:hover .button-sweep {
 }
 
 .terminal-output {
-  min-height: 19rem;
-  max-height: 26rem;
+  height: clamp(19rem, 34vh, 26rem);
   overflow: auto;
+  overflow-anchor: none;
   padding: 1.15rem;
   font-family: var(--font-geist-mono), monospace;
   scrollbar-color: oklch(0.82 0.2 164 / 0.5) transparent;
@@ -1033,7 +1039,11 @@ button:hover .button-sweep {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  border-top: 1px solid oklch(0.72 0.18 174 / 0.16);
+  min-width: 0;
+  min-inline-size: 0;
+  max-width: 100%;
+  max-inline-size: 100%;
+  border-bottom: 1px solid oklch(0.72 0.18 174 / 0.16);
   padding: 1rem;
 }
 
@@ -1064,6 +1074,8 @@ button:hover .button-sweep {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
+  min-inline-size: 0;
   border-top: 1px solid oklch(0.72 0.18 174 / 0.16);
   padding: 1rem;
   font-family: var(--font-geist-mono), monospace;
@@ -1689,18 +1701,25 @@ button:hover .button-sweep {
   }
 
   .terminal-output {
-    min-height: 12rem;
-    max-height: 18rem;
+    height: 14rem;
   }
 
   .command-row {
     gap: 0.6rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     padding: 0.85rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .command-row::-webkit-scrollbar {
+    display: none;
   }
 
   .command-row button {
-    flex: 1 1 calc(50% - 0.6rem);
-    min-width: 8.1rem;
+    flex: 0 0 auto;
+    min-width: max-content;
   }
 
   .terminal-input-row {

@@ -160,16 +160,6 @@ const dataShards = [
   "CLEARANCE: PUBLIC",
 ];
 
-const commandScrollTargets: Record<string, string> = {
-  "/whoami": "operator",
-  "/systems": "systems",
-  "/skills": "capabilities",
-  "/timeline": "timeline",
-  "/contact": "contact",
-  "/signal": "contact",
-  "/archive": "top",
-};
-
 function scrollToSection(id: string) {
   const target = document.getElementById(id);
   if (!target) return;
@@ -227,13 +217,30 @@ export default function Home() {
   }, []);
 
   function runCommand(rawCommand: string) {
-    const command = rawCommand.trim().toLowerCase();
-    if (!command) return;
+    const trimmedCommand = rawCommand.trim().toLowerCase();
+    if (!trimmedCommand) return;
+
+    const command = trimmedCommand.startsWith("/") ? trimmedCommand : `/${trimmedCommand}`;
+    const shouldPreserveScroll = command !== "/signal";
+    const previousScrollX = window.scrollX;
+    const previousScrollY = window.scrollY;
+    const preserveScrollPosition = () => {
+      if (!shouldPreserveScroll) return;
+
+      const restoreScroll = () => {
+        window.scrollTo({ left: previousScrollX, top: previousScrollY, behavior: "auto" });
+      };
+
+      window.requestAnimationFrame(restoreScroll);
+      window.setTimeout(restoreScroll, 80);
+      window.setTimeout(restoreScroll, 240);
+    };
 
     if (command === "/clear") {
       setTerminalHistory([]);
       setTerminalInput("");
       setLatestEntryId(-1);
+      preserveScrollPosition();
       return;
     }
 
@@ -249,15 +256,12 @@ export default function Home() {
     setTerminalHistory((history) => [...history, { id: entryId, command, lines }].slice(-8));
     setLatestEntryId(entryId);
     setTerminalInput("");
-
-    const scrollTarget = commandScrollTargets[command];
-    if (scrollTarget) {
-      window.setTimeout(() => scrollToSection(scrollTarget), 220);
-    }
+    preserveScrollPosition();
 
     if (command === "/signal") {
       setSignalActive(true);
       setSignalSent(true);
+      window.setTimeout(() => scrollToSection("contact"), 180);
       window.setTimeout(() => setSignalActive(false), 1400);
     }
   }
@@ -543,6 +547,22 @@ export default function Home() {
               <span>invisible.archive</span>
               <span>PUBLIC SESSION</span>
             </div>
+            <div className="command-row">
+              {commandList.map((command) => (
+                <button
+                  key={command}
+                  type="button"
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    event.currentTarget.blur();
+                    runCommand(command);
+                  }}
+                >
+                  {command}
+                </button>
+              ))}
+            </div>
             <div className="terminal-output" aria-live="polite">
               {terminalHistory.map((entry) => (
                 <div key={entry.id} className="terminal-entry">
@@ -555,13 +575,6 @@ export default function Home() {
                     </p>
                   ))}
                 </div>
-              ))}
-            </div>
-            <div className="command-row">
-              {commandList.map((command) => (
-                <button key={command} type="button" onClick={() => runCommand(command)}>
-                  {command}
-                </button>
               ))}
             </div>
             <form className="terminal-input-row" onSubmit={handleTerminalSubmit}>
