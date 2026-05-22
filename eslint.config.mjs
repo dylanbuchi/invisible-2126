@@ -10,6 +10,11 @@ const eslintConfig = defineConfig([
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
+    "public/_next/**",
+    "public/_not-found/**",
+    "public/*.html",
+    "public/*.txt",
+    "public/icon.svg",
     "build/**",
     "next-env.d.ts",
   ]),

@@ -329,15 +329,15 @@ export default function Home() {
       </div>
       <div className="unlock-sweep" aria-hidden="true" />
       <div
-        className={`archive-hud ${archiveUnlocked ? "archive-hud--visible" : ""}`}
+        className={`archive-hud ${unlockBurst ? "archive-hud--visible" : ""}`}
         aria-live="polite"
       >
         <span>ACCESS GRANTED</span>
         <strong>Archive node 7F-2126 unlocked</strong>
       </div>
 
-      <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:min-h-screen lg:px-10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm lg:min-h-[calc(100vh-2.5rem)]">
+      <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:px-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-col border border-[oklch(0.72_0.18_174_/_0.22)] bg-[oklch(0.11_0.018_185_/_0.68)] shadow-[0_0_80px_oklch(0.68_0.22_166_/_0.12)] backdrop-blur-sm lg:min-h-[calc(100vh-7rem)]">
           <header className="archive-header flex flex-wrap items-center justify-between gap-3 border-b border-[oklch(0.72_0.18_174_/_0.18)] px-4 py-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-[oklch(0.73_0.06_185)] sm:px-6">
             <a href="#top" className="archive-brand text-[oklch(0.83_0.18_172)] transition hover:text-[oklch(0.92_0.18_162)]">
               <span className="brand-dot" aria-hidden="true" />
@@ -360,7 +360,7 @@ export default function Home() {
           </header>
 
           <div className="grid flex-1 grid-cols-1 lg:grid-cols-[1.03fr_0.97fr]">
-            <div className="relative flex flex-col justify-center gap-8 border-b border-[oklch(0.72_0.18_174_/_0.16)] px-5 py-10 sm:px-8 sm:py-14 lg:border-b-0 lg:border-r lg:px-10 xl:px-12">
+            <div className="relative flex flex-col justify-center gap-8 border-b border-[oklch(0.72_0.18_174_/_0.16)] px-5 py-10 sm:px-8 sm:py-14 lg:justify-start lg:border-b-0 lg:border-r lg:px-10 lg:pb-16 lg:pt-24 xl:px-12">
               <div className="absolute left-5 top-5 h-20 w-px bg-[oklch(0.77_0.18_174_/_0.45)]" />
               <div className="absolute right-7 top-16 hidden h-28 w-28 border-r border-t border-[oklch(0.77_0.18_174_/_0.28)] lg:block" />
 
