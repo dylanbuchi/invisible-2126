@@ -386,7 +386,7 @@ export default function Home() {
   return (
     <main
       ref={archiveShellRef}
-      className={`archive-shell min-h-screen overflow-hidden ${signalActive ? "signal-active" : ""} ${
+      className={`archive-shell min-h-screen cursor-none overflow-hidden ${signalActive ? "signal-active" : ""} ${
         unlockBurst ? "unlock-burst" : ""
       } ${archiveUnlocked ? "archive-unlocked" : ""}`}
       style={archiveStyle}
@@ -407,6 +407,11 @@ export default function Home() {
         <div className="scan-field" />
       </div>
       <div className="pointer-reactor" aria-hidden="true" />
+      <div
+        className="cursor-reticle pointer-events-none fixed z-[90] hidden h-[2.35rem] w-[2.35rem] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ top: "var(--pointer-y)", left: "var(--pointer-x)" }}
+        aria-hidden="true"
+      />
       <div className="unlock-sweep" aria-hidden="true" />
       <div
         className={`archive-hud ${unlockBurst ? "archive-hud--visible" : ""}`}
