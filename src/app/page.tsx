@@ -330,8 +330,10 @@ export default function Home() {
 
     shell.style.setProperty("--pointer-x", `${x}px`);
     shell.style.setProperty("--pointer-y", `${y}px`);
-    shell.style.setProperty("--tilt-x", tiltX.toFixed(3));
-    shell.style.setProperty("--tilt-y", tiltY.toFixed(3));
+    shell.style.setProperty("--tilt-x-angle", `${(tiltX * 2.4).toFixed(3)}deg`);
+    shell.style.setProperty("--tilt-y-angle", `${(tiltY * 3.2).toFixed(3)}deg`);
+    shell.style.setProperty("--tilt-x-soft-angle", `${(tiltX * 0.8).toFixed(3)}deg`);
+    shell.style.setProperty("--tilt-y-soft-angle", `${(tiltY * 1).toFixed(3)}deg`);
   }
 
   function appendTerminalEntry(command: string, lines: string[]) {
@@ -375,8 +377,10 @@ export default function Home() {
   const archiveStyle = {
     "--pointer-x": "50vw",
     "--pointer-y": "50vh",
-    "--tilt-x": "0",
-    "--tilt-y": "0",
+    "--tilt-x-angle": "0deg",
+    "--tilt-y-angle": "0deg",
+    "--tilt-x-soft-angle": "0deg",
+    "--tilt-y-soft-angle": "0deg",
   } as CSSProperties;
 
   return (

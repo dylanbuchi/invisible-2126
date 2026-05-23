@@ -64,12 +64,33 @@ input {
   pointer-events: none;
   opacity: 0;
   background:
-    radial-gradient(circle 16rem at var(--pointer-x) var(--pointer-y), oklch(0.9 0.18 118 / 0.12), transparent 72%),
-    radial-gradient(circle 26rem at var(--pointer-x) var(--pointer-y), oklch(0.82 0.2 164 / 0.1), transparent 74%),
-    linear-gradient(90deg, transparent calc(var(--pointer-x) - 1px), oklch(0.82 0.2 164 / 0.16) var(--pointer-x), transparent calc(var(--pointer-x) + 1px)),
-    linear-gradient(0deg, transparent calc(var(--pointer-y) - 1px), oklch(0.9 0.18 118 / 0.12) var(--pointer-y), transparent calc(var(--pointer-y) + 1px));
+    radial-gradient(circle 16rem at var(--pointer-x) var(--pointer-y), oklch(0.9 0.18 118 / 0.18), transparent 72%),
+    radial-gradient(circle 28rem at var(--pointer-x) var(--pointer-y), oklch(0.82 0.2 164 / 0.14), transparent 74%);
   mix-blend-mode: screen;
   transition: opacity 260ms ease;
+}
+
+.pointer-reactor::before,
+.pointer-reactor::after {
+  position: fixed;
+  z-index: 1;
+  background: oklch(0.86 0.2 164 / 0.22);
+  box-shadow: 0 0 24px oklch(0.82 0.2 164 / 0.16);
+  content: "";
+}
+
+.pointer-reactor::before {
+  top: 0;
+  bottom: 0;
+  left: var(--pointer-x);
+  width: 1px;
+}
+
+.pointer-reactor::after {
+  top: var(--pointer-y);
+  right: 0;
+  left: 0;
+  height: 1px;
 }
 
 .grid-field {
@@ -442,8 +463,8 @@ button:hover .button-sweep {
     0 0 60px oklch(0.82 0.2 164 / 0.16);
   transform:
     perspective(60rem)
-    rotateX(calc(var(--tilt-x) * 2.4deg))
-    rotateY(calc(var(--tilt-y) * 3.2deg));
+    rotateX(var(--tilt-x-angle))
+    rotateY(var(--tilt-y-angle));
   transition: transform 180ms ease-out;
 }
 
@@ -815,8 +836,8 @@ button:hover .button-sweep {
   background: oklch(0.72 0.18 174 / 0.16);
   transform:
     perspective(80rem)
-    rotateX(calc(var(--tilt-x) * 0.7deg))
-    rotateY(calc(var(--tilt-y) * 0.9deg));
+    rotateX(var(--tilt-x-soft-angle))
+    rotateY(var(--tilt-y-soft-angle));
   transition: transform 180ms ease-out;
 }
 
@@ -1071,8 +1092,8 @@ button:hover .button-sweep {
 .project-record:hover {
   transform:
     perspective(70rem)
-    rotateX(calc(var(--tilt-x) * 0.8deg))
-    rotateY(calc(var(--tilt-y) * 1deg));
+    rotateX(var(--tilt-x-soft-angle))
+    rotateY(var(--tilt-y-soft-angle));
 }
 
 .record-topline,
