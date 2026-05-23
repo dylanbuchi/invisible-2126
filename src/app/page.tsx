@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { CSSProperties, FormEvent, PointerEvent, useEffect, useRef, useState } from "react";
 
 type TerminalEntry = {
   id: number;
@@ -132,6 +132,13 @@ const projects = [
   },
 ];
 
+const constellationPositions: Record<string, { x: number; y: number }> = {
+  "Ledger Ghost": { x: 18, y: 68 },
+  "Reply Shield": { x: 37, y: 30 },
+  "Signal Funnel": { x: 67, y: 38 },
+  "Ops Relay": { x: 82, y: 72 },
+};
+
 const timeline = [
   ["2026", "Self-directed builder era"],
   ["2034", "First autonomous client systems"],
@@ -207,7 +214,11 @@ export default function Home() {
   const [gateResolved, setGateResolved] = useState(false);
   const [archiveUnlocked, setArchiveUnlocked] = useState(false);
   const [unlockBurst, setUnlockBurst] = useState(false);
+  const [selectedProjectName, setSelectedProjectName] = useState(projects[0].name);
+  const [transmissionId, setTransmissionId] = useState("TX-2126-PENDING");
+  const [channelCopied, setChannelCopied] = useState(false);
   const entryIdRef = useRef(1);
+  const archiveShellRef = useRef<HTMLElement>(null);
   const terminalInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -303,15 +314,79 @@ export default function Home() {
     window.setTimeout(() => setUnlockBurst(false), 1200);
   }
 
+  function updatePointerSignal(event: PointerEvent<HTMLElement>) {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
+    const shell = archiveShellRef.current;
+    if (!shell) return;
+
+    const width = window.innerWidth || 1;
+    const height = window.innerHeight || 1;
+    const x = event.clientX;
+    const y = event.clientY;
+    const tiltX = ((y / height) - 0.5) * -1;
+    const tiltY = (x / width - 0.5);
+
+    shell.style.setProperty("--pointer-x", `${x}px`);
+    shell.style.setProperty("--pointer-y", `${y}px`);
+    shell.style.setProperty("--tilt-x", tiltX.toFixed(3));
+    shell.style.setProperty("--tilt-y", tiltY.toFixed(3));
+  }
+
+  function appendTerminalEntry(command: string, lines: string[]) {
+    const entryId = entryIdRef.current;
+    entryIdRef.current += 1;
+    setTerminalHistory((history) => [...history, { id: entryId, command, lines }].slice(-8));
+    setLatestEntryId(entryId);
+  }
+
+  async function openSignalChannel() {
+    const randomBytes = new Uint8Array(2);
+    window.crypto.getRandomValues(randomBytes);
+    const nextTransmissionId = `TX-2126-${Array.from(randomBytes, (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("").toUpperCase()}`;
+    const signalChannel = `node-7f@archive.invalid // ${nextTransmissionId}`;
+
+    setSignalSent(true);
+    setSignalActive(true);
+    setTransmissionId(nextTransmissionId);
+    appendTerminalEntry("/signal", [
+      "Signal detected. Transmission panel exposed.",
+      `Transmission indexed: ${nextTransmissionId}.`,
+    ]);
+
+    try {
+      await navigator.clipboard.writeText(signalChannel);
+      setChannelCopied(true);
+    } catch {
+      setChannelCopied(false);
+    }
+
+    window.setTimeout(() => setSignalActive(false), 1400);
+  }
+
   const heroScanTiles = archiveUnlocked
-    ? ["ACCESS: GRANTED", "SOURCE: HUMAN", "RECORD: PRESERVED"]
+    ? ["FILE: ACTIVE", "SOURCE: HUMAN", "RECORD: PRESERVED"]
     : ["SCAN: CLEAN", "SOURCE: HUMAN", "RECORD: PRESERVED"];
+  const selectedProject = projects.find((project) => project.name === selectedProjectName) ?? projects[0];
+  const selectedProjectIndex = projects.findIndex((project) => project.name === selectedProject.name);
+  const archiveStyle = {
+    "--pointer-x": "50vw",
+    "--pointer-y": "50vh",
+    "--tilt-x": "0",
+    "--tilt-y": "0",
+  } as CSSProperties;
 
   return (
     <main
+      ref={archiveShellRef}
       className={`archive-shell min-h-screen overflow-hidden ${signalActive ? "signal-active" : ""} ${
         unlockBurst ? "unlock-burst" : ""
       } ${archiveUnlocked ? "archive-unlocked" : ""}`}
+      style={archiveStyle}
+      onPointerMove={updatePointerSignal}
     >
       <div className={`intro-lock ${gateResolved ? "intro-lock--done" : ""}`} aria-hidden="true">
         <div className="intro-lock__frame">
@@ -327,13 +402,14 @@ export default function Home() {
         <div className="noise-field" />
         <div className="scan-field" />
       </div>
+      <div className="pointer-reactor" aria-hidden="true" />
       <div className="unlock-sweep" aria-hidden="true" />
       <div
         className={`archive-hud ${unlockBurst ? "archive-hud--visible" : ""}`}
         aria-live="polite"
       >
-        <span>ACCESS GRANTED</span>
-        <strong>Archive node 7F-2126 unlocked</strong>
+        <span>ARCHIVE OPEN</span>
+        <strong>Operator file indexed</strong>
       </div>
 
       <section id="top" className="relative z-10 px-5 py-5 sm:px-7 lg:px-10">
@@ -370,7 +446,7 @@ export default function Home() {
                     <div key={label} className="bg-[oklch(0.105_0.02_185_/_0.94)] p-3">
                       <span className="block text-[oklch(0.52_0.045_190)]">{label}</span>
                       <strong className="mt-2 block font-medium text-[oklch(0.86_0.17_164)]">
-                        {archiveUnlocked && label === "CLEARANCE" ? "GRANTED" : value}
+                        {value}
                       </strong>
                     </div>
                   ))}
@@ -394,7 +470,7 @@ export default function Home() {
                     onClick={unlockArchive}
                     className="group relative min-h-12 overflow-hidden border border-[oklch(0.82_0.2_164_/_0.72)] bg-[oklch(0.78_0.2_162)] px-6 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-[oklch(0.13_0.03_175)] shadow-[0_0_34px_oklch(0.78_0.2_162_/_0.24)] transition hover:bg-[oklch(0.88_0.18_158)]"
                   >
-                    <span className="relative z-10">{archiveUnlocked ? "Archive Open" : "Enter Archive"}</span>
+                    <span className="relative z-10">{archiveUnlocked ? "File Open" : "Open Operator File"}</span>
                     <span className="button-sweep" />
                   </button>
                   <button
@@ -411,8 +487,8 @@ export default function Home() {
             <div className="hero-visual relative overflow-hidden bg-[oklch(0.075_0.018_190_/_0.88)]">
               <div className="hero-orbit absolute inset-0" />
               <div className="hero-scan-label absolute inset-x-8 top-8 z-10 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[oklch(0.66_0.08_185)]">
-                <span>{archiveUnlocked ? "ARCHIVE OPEN" : "ACCESS SCAN"}</span>
-                <span>{archiveUnlocked ? "ACCESS GRANTED" : gateResolved ? "VERIFIED" : "VERIFYING"}</span>
+                <span>{archiveUnlocked ? "OPERATOR FILE" : "PUBLIC ARCHIVE"}</span>
+                <span>{archiveUnlocked ? "ACTIVE" : gateResolved ? "ONLINE" : "VERIFYING"}</span>
               </div>
               <div className="data-shards hidden sm:block" aria-hidden="true">
                 {dataShards.map((shard) => (
@@ -460,8 +536,8 @@ export default function Home() {
             <div className="operator-avatar">
               <div className="operator-avatar__glyph" />
               <div className={`operator-verify ${archiveUnlocked ? "operator-verify--open" : ""}`}>
-                <span>{archiveUnlocked ? "VERIFIED ACCESS" : "SEALED FILE"}</span>
-                <strong>{archiveUnlocked ? "Builder evidence unlocked" : "Awaiting archive entry"}</strong>
+                <span>{archiveUnlocked ? "FILE ACTIVE" : "PUBLIC FILE"}</span>
+                <strong>{archiveUnlocked ? "Builder evidence indexed" : "Identity sealed"}</strong>
               </div>
               <p>Not a brand. Not an influencer. A builder record.</p>
             </div>
@@ -524,12 +600,85 @@ export default function Home() {
             <p>The operator remains unknown. The systems show role, stack, output, and constraint without exposing identity.</p>
           </div>
 
+          <div className="signal-constellation" aria-label="Live project signal constellation">
+            <div className="constellation-map">
+              <div className="constellation-orbit constellation-orbit--outer" />
+              <div className="constellation-orbit constellation-orbit--inner" />
+              <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {projects.map((project) => {
+                  const point = constellationPositions[project.name];
+                  const selectedPoint = constellationPositions[selectedProject.name];
+                  return (
+                    <line
+                      key={`${selectedProject.name}-${project.name}`}
+                      x1={selectedPoint.x}
+                      y1={selectedPoint.y}
+                      x2={point.x}
+                      y2={point.y}
+                      className={project.name === selectedProject.name ? "constellation-line--active" : ""}
+                    />
+                  );
+                })}
+              </svg>
+              {projects.map((project) => {
+                const point = constellationPositions[project.name];
+                const isActive = project.name === selectedProject.name;
+                return (
+                  <button
+                    key={project.name}
+                    type="button"
+                    className={`constellation-node ${isActive ? "constellation-node--active" : ""}`}
+                    style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                    onClick={() => setSelectedProjectName(project.name)}
+                    aria-pressed={isActive}
+                  >
+                    <span>{project.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <aside className="constellation-readout" aria-live="polite">
+              <span>SELECTED RECORD // 0{selectedProjectIndex + 1}</span>
+              <h3>{selectedProject.name}</h3>
+              <p>{selectedProject.artifact}</p>
+              <dl>
+                <div>
+                  <dt>Signal</dt>
+                  <dd>{selectedProject.signal}%</dd>
+                </div>
+                <div>
+                  <dt>Category</dt>
+                  <dd>{selectedProject.category}</dd>
+                </div>
+                <div>
+                  <dt>Output</dt>
+                  <dd>{selectedProject.flow.output}</dd>
+                </div>
+              </dl>
+              <div className="constellation-pulse">
+                <span style={{ width: `${selectedProject.signal}%` }} />
+              </div>
+            </aside>
+          </div>
+
           <div className="project-archive">
             {projects.map((project) => (
-              <article key={project.name} className={`project-record project-record--${project.map}`}>
+              <article
+                key={project.name}
+                className={`project-record project-record--${project.map} ${
+                  project.name === selectedProject.name ? "project-record--selected" : ""
+                }`}
+              >
                 <div className="record-topline">
                   <span>ARCHIVED: 2126</span>
                   <span>RATING: {project.signal}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProjectName(project.name)}
+                    aria-label={`Inspect ${project.name}`}
+                  >
+                    Inspect
+                  </button>
                 </div>
                 <h3>{project.name}</h3>
                 <p className="record-category">{project.category}</p>
@@ -675,16 +824,20 @@ export default function Home() {
               <span className="signal-wave" />
               <p>Signal channel</p>
               <strong>node-7f@archive.invalid</strong>
+              <code>{transmissionId}</code>
               <button
                 type="button"
-                onClick={() => {
-                  setSignalSent(true);
-                  runCommand("/signal");
-                }}
+                onClick={openSignalChannel}
               >
                 {signalSent ? "Signal Sent" : "Open Channel"}
               </button>
-              <small>{signalSent ? "Transmission logged. Public archive channel remains open." : "Awaiting outbound signal."}</small>
+              <small>
+                {channelCopied
+                  ? "Transmission copied. Public archive channel remains open."
+                  : signalSent
+                    ? "Transmission logged. Public archive channel remains open."
+                    : "Awaiting outbound signal."}
+              </small>
             </div>
           </div>
         </div>
