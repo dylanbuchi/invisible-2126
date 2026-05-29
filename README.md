@@ -1,6 +1,13 @@
 # INVISIBLE // 2126
 
-Anonymous single-page portfolio for the A3 2126 Portfolio Challenge.
+Anonymous single-page portfolio built and deployed for the A3 2126 Portfolio Challenge.
+
+## Recognition
+
+- A3 Web Design Challenge - 2126 Portfolio Category Winner
+- 4th Overall, 198/300
+- Live: https://invisible-2126--open-global-canister1.a3icp.com/
+- Focus: Next.js, Tailwind, interaction design, responsive frontend, A3 deployment
 
 ## Run Locally
 
