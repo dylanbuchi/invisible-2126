@@ -2,7 +2,7 @@
 
 A futuristic anonymous portfolio built for the A3 2126 Portfolio Challenge. The site presents a redacted builder profile as a classified archive from 2126, with coded project records, a local interactive terminal, responsive motion, and static deployment on A3.
 
-[Live site](https://invisible-2126--open-global-canister1.a3icp.com/)
+[Live site](https://invisible-2126.vercel.app/)
 
 ## Recognition
 

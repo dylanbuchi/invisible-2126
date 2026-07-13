@@ -2,7 +2,7 @@
   "name": "invisible-2126",
   "version": "0.1.0",
   "description": "A futuristic anonymous portfolio built for the A3 2126 Portfolio Challenge.",
-  "homepage": "https://invisible-2126--open-global-canister1.a3icp.com/",
+  "homepage": "https://invisible-2126.vercel.app/",
   "private": true,
   "repository": {
     "type": "git",
